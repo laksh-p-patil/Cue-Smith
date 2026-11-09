@@ -1,0 +1,76 @@
+{
+    "id": 4,
+    "title": "Iterate smartly",
+    "summary": "Treat the first answer as a draft: follow up, ask for a critique and change one thing at a time.",
+    "concept": [
+        "The first answer is a draft. If it isn’t right, you usually don’t need to start over. In the same conversation, the chatbot can generally see your earlier messages, so you can ask it to change the answer it just gave.",
+        "Three habits help. Follow up with a specific change, such as “shorter” or “simpler words”. Ask for a critique, such as “What is weak or missing in this answer?”, before you revise. And change one thing at a time, so you can tell which change helped. A critique is just another answer, so you still decide what is true and what is worth keeping."
+    ],
+    "bad_prompt": "That’s not good. Try again.",
+    "good_prompt": "Keep the three main points and shorten the answer to about 100 words. Don’t change anything else.",
+    "breakdown": [
+        {
+            "part": "What to keep",
+            "quote": "Keep the three main points",
+            "why": "Says what is already good, so it isn’t lost in the rewrite."
+        },
+        {
+            "part": "One change",
+            "quote": "shorten the answer to about 100 words",
+            "why": "Asks for a single, measurable change, so you can see whether it worked."
+        },
+        {
+            "part": "Boundary",
+            "quote": "Don’t change anything else",
+            "why": "Reduces the chance of other parts of the answer changing without you asking."
+        }
+    ],
+    "mistakes": [
+        "Saying “try again” or “that’s bad” without saying what is wrong.",
+        "Changing length, tone and structure all at once, so you can’t tell which change helped.",
+        "Accepting a revised answer without reading it. A new version can change things you didn’t ask for."
+    ],
+    "try_it": "Ask for a short explanation of a topic from your course. Then send three follow-ups, one at a time: make it shorter, add an example, and ask “What is weak or missing in this answer?” Note which follow-up helped most.",
+    "takeaway": "Treat the first answer as a draft. Say what to keep, change one thing, and ask for a critique.",
+    "quiz": [
+        {
+            "question": "The first answer is too long but otherwise good. Which message is best?",
+            "options": [
+                "That’s bad. Try again.",
+                "Keep everything the same, but shorten it to about 100 words.",
+                "Start a new chat and retype the request with five new changes.",
+                "Ask a new, unrelated question."
+            ],
+            "answer": 1,
+            "explain": "It says what to keep and asks for one specific change."
+        },
+        {
+            "question": "Why change one thing at a time?",
+            "options": [
+                "Because the AI can only read one word at a time",
+                "Because follow-up messages are not allowed",
+                "So you can tell which change helped",
+                "Because it always makes answers longer"
+            ],
+            "answer": 2,
+            "explain": "If you change several things at once, you can’t tell which change made the difference."
+        },
+        {
+            "question": "You ask “What is weak or missing in this answer?” What does the lesson say about the reply?",
+            "options": [
+                "It is always correct",
+                "It replaces checking facts",
+                "It proves the first answer was wrong",
+                "It is another answer, so you still decide what is true and worth keeping"
+            ],
+            "answer": 3,
+            "explain": "A critique is only another answer from the AI, so the judgement is still yours."
+        }
+    ],
+    "compare": {
+        "prompt_a": "Keep the three main points and shorten the answer to about 100 words. Don’t change anything else.",
+        "prompt_b": "That’s not what I wanted. Try again.",
+        "better": "a",
+        "why": "It says what to keep and asks for one specific change, while the other doesn’t say what is wrong."
+    }
+}

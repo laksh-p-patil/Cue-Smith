@@ -1,0 +1,76 @@
+{
+    "id": 5,
+    "title": "Using AI honestly",
+    "summary": "Keep private details out, check the facts and follow your college’s AI rules.",
+    "concept": [
+        "What you type into an AI tool may be stored or reviewed by the company that runs it, depending on the service and its settings. So don’t paste anything you wouldn’t want others to see: ID or bank details, passwords, your home address and phone number, or other people’s private information, such as a classmate’s messages.",
+        "Honesty has two more parts. First, check the facts, because an AI can be wrong while sounding sure (Lesson 1). Second, follow your college’s rules. Rules differ between colleges and even between courses, so read your course’s AI policy or ask your teacher. Where AI help isn’t allowed, handing in AI-written text as your own work is cheating. Where it is allowed, say how you used it if your college asks."
+    ],
+    "bad_prompt": "Here is my student ID number, my home address and my bank account number. Fill in this scholarship form for me.",
+    "good_prompt": "I’m filling in a scholarship form. Explain what a “proof of address” field usually means and give me a checklist of documents to gather. Use placeholders like [NAME] and [ADDRESS] in any example, and tell me if you’re unsure, because I’ll check the form’s instructions myself.",
+    "breakdown": [
+        {
+            "part": "Ask for help, not for data",
+            "quote": "Explain what a “proof of address” field usually means",
+            "why": "Gets the general knowledge you need without giving the AI your details."
+        },
+        {
+            "part": "Placeholders",
+            "quote": "Use placeholders like [NAME] and [ADDRESS] in any example",
+            "why": "Keeps your private details out of the chat. You fill them in yourself later."
+        },
+        {
+            "part": "Your own check",
+            "quote": "I’ll check the form’s instructions myself",
+            "why": "The form or the office has the final say, not the AI, so you check the facts against it."
+        }
+    ],
+    "mistakes": [
+        "Pasting ID numbers, bank details, passwords or other people’s private information into a chat.",
+        "Assuming AI use is allowed because it’s easy, without reading your course’s AI policy.",
+        "Handing in AI-written text as your own work where your college doesn’t allow it."
+    ],
+    "try_it": "Find your college’s or course’s rule on AI use, in the course handout or by asking your teacher. Write down one thing it allows and one thing it doesn’t. Then rewrite one of your own prompts that included a personal detail so it uses a placeholder instead.",
+    "takeaway": "Keep private details out, check the facts, and follow your college’s AI rules.",
+    "quiz": [
+        {
+            "question": "Which of these is safest to type into an AI chat?",
+            "options": [
+                "Your bank account number",
+                "A classmate’s private messages",
+                "A general question about how scholarship forms work",
+                "Your password"
+            ],
+            "answer": 2,
+            "explain": "A general question doesn’t contain private details about you or anyone else."
+        },
+        {
+            "question": "Your course doesn’t allow AI-written work. What should you do?",
+            "options": [
+                "Hand it in after changing a few words",
+                "Follow the rule, and ask your teacher if you’re unsure what is allowed",
+                "Hand it in as your own, since you wrote the prompt",
+                "Ignore the rule when the AI sounds confident"
+            ],
+            "answer": 1,
+            "explain": "Where AI help isn’t allowed, handing in AI text as your own is cheating, and your teacher can clarify the rule."
+        },
+        {
+            "question": "Why should you check an AI’s facts even when you use it honestly?",
+            "options": [
+                "It can be wrong while sounding sure",
+                "It always copies from other students",
+                "Checking is only needed for essays",
+                "It can’t state any facts"
+            ],
+            "answer": 0,
+            "explain": "An AI can state a wrong fact in the same calm tone as a right one, so you check."
+        }
+    ],
+    "compare": {
+        "prompt_a": "Here is my student ID number, my home address and my bank account number. Fill in this scholarship form for me.",
+        "prompt_b": "I’m filling in a scholarship form. Explain what a “proof of address” field usually means. Use [NAME] and [ADDRESS] placeholders in any example.",
+        "better": "b",
+        "why": "It asks for help without sharing private details, while the other puts your ID, address and bank details into the chat."
+    }
+}

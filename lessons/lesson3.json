@@ -1,0 +1,81 @@
+{
+    "id": 3,
+    "title": "Show an example",
+    "summary": "A short sample of the style you want often works better than describing it.",
+    "concept": [
+        "Words like “friendly”, “clear” or “short” mean different things to different people, and the AI has to guess which one you mean. A sample removes the guesswork. If you paste a short example of the style or format you want, the AI can copy its tone, length and layout.",
+        "Keep the sample small and say what to copy. Tell the AI what to match (for example the layout and tone) and what to change (the topic or the wording). Then read the result. The AI may copy things you didn’t mean it to, such as the sample’s exact sentences."
+    ],
+    "bad_prompt": "Write me a revision summary in a clear, student-friendly style.",
+    "good_prompt": "Write a revision summary of photosynthesis in the same format as the example below. Match the layout and tone, but don’t reuse its wording. Example: “Topic: Newton’s first law. In one line: an object keeps doing what it’s doing unless a force acts on it. Key term: inertia. Everyday case: a ball stays still until you kick it.”",
+    "breakdown": [
+        {
+            "part": "Task",
+            "quote": "Write a revision summary of photosynthesis",
+            "why": "Says what new content you want, so the sample isn’t mistaken for the topic."
+        },
+        {
+            "part": "Sample",
+            "quote": "Topic: Newton’s first law. In one line:",
+            "why": "Shows the exact layout, so you don’t have to describe it in words."
+        },
+        {
+            "part": "What to copy",
+            "quote": "Match the layout and tone",
+            "why": "Names the parts of the sample the AI should follow."
+        },
+        {
+            "part": "What to change",
+            "quote": "don’t reuse its wording",
+            "why": "Stops the AI from repeating the sample’s sentences in your new answer."
+        }
+    ],
+    "mistakes": [
+        "Describing a style only in vague words like “nice” or “clear”.",
+        "Pasting a long sample without saying what to copy, so the AI copies the wrong things.",
+        "Not checking whether the answer reused wording or details from the sample that don’t fit your topic."
+    ],
+    "try_it": "Take a short, well-laid-out set of your own notes, or write three lines in a format you like. Ask the AI to write notes on a different topic in the same format. Then check: did it match the layout, and did it copy anything that doesn’t belong?",
+    "takeaway": "Paste a short sample, say what to copy and what to change, then check the result.",
+    "quiz": [
+        {
+            "question": "Why can a sample work better than describing a style in words?",
+            "options": [
+                "The AI can only understand samples",
+                "A sample makes the answer always correct",
+                "Words like “friendly” can mean different things, while a sample shows the exact style",
+                "With a sample you no longer need to say what task you want"
+            ],
+            "answer": 2,
+            "explain": "A sample shows the style directly, so the AI doesn’t have to guess what a word like “friendly” means."
+        },
+        {
+            "question": "In the strong prompt, “Match the layout and tone, but don’t reuse its wording” does which job?",
+            "options": [
+                "It names what to copy and what to change",
+                "It sets a time limit",
+                "It asks the AI to check its facts",
+                "It replaces the task"
+            ],
+            "answer": 0,
+            "explain": "It tells the AI to follow the sample’s layout and tone while writing new sentences."
+        },
+        {
+            "question": "You paste a sample and the answer comes back. What should you do next?",
+            "options": [
+                "Assume it is fine, because the AI saw a sample",
+                "Paste a much longer sample and try again",
+                "Delete the sample and resend the same request",
+                "Check whether it reused wording or details from the sample that don’t fit your topic"
+            ],
+            "answer": 3,
+            "explain": "The AI may copy parts of the sample you didn’t mean it to, so you read the result."
+        }
+    ],
+    "compare": {
+        "prompt_a": "Write notes on the water cycle in a clear style.",
+        "prompt_b": "Write notes on the water cycle in the same format as this example: “Topic: Newton’s first law. In one line: an object keeps doing what it’s doing unless a force acts on it. Key term: inertia.” Match the layout, not the wording.",
+        "better": "b",
+        "why": "It shows the format with a sample and says what to copy, while the other only asks for a “clear style” and leaves the AI to guess."
+    }
+}
