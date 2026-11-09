@@ -1,0 +1,8 @@
+{
+    "id": 2,
+    "title": "Anatomy of a prompt",
+    "summary": "A good prompt says who it's for, what you want and what shape the answer takes.",
+    "bad_prompt": "Help me study for my exam.",
+    "good_prompt": "I'm a first-year engineering student with a physics exam in 3 days. Make a 3-day study plan, 90 minutes per day, covering Newton's laws and friction. Give it as a table.",
+    "takeaway": "Give context, a task and a format. Then check the answer."
+}

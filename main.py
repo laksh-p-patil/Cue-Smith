@@ -1,12 +1,7 @@
-from nicegui import ui
-from loader import load_lesson
+from nicegui import app, ui
+from loader import load_lesson, list_lessons
 
-ui.add_head_html('''
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600&display=swap" rel="stylesheet">
-''')
-
-ui.add_css('''
+CSS = '''
 :root {
     --bg: #f5f5f7;
     --panel: rgba(255, 255, 255, 0.7);
@@ -53,9 +48,19 @@ body {
     letter-spacing: -0.02em;
     color: var(--text);
 }
+.card-title {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text);
+}
 .subtitle {
     font-size: 17px;
     color: var(--muted);
+}
+.card-link {
+    text-decoration: none;
+    color: inherit;
 }
 .mode-toggle {
     position: fixed;
@@ -70,23 +75,66 @@ body {
 }
 .fade-in { animation: fadeUp 0.6s ease both; }
 .fade-in-2 { animation: fadeUp 0.6s ease 0.15s both; }
-''')
+'''
 
-dark = ui.dark_mode(True)
-ui.button(icon='brightness_6', on_click=dark.toggle).props('flat round').classes('mode-toggle')
 
-lesson = load_lesson(1)
+def setup_page():
+    is_dark = app.storage.user.setdefault('dark_mode', True)
+    bg, text = ('#121214', '#f5f5f7') if is_dark else ('#f5f5f7', '#1d1d1f')
+    ui.add_head_html(f'''
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+    body:not(.body--dark):not(.body--light) {{
+        background: {bg} !important;
+        color: {text} !important;
+        transition: none !important;
+    }}
+    </style>
+    ''')
+    ui.add_css(CSS)
+    dark = ui.dark_mode().bind_value(app.storage.user, 'dark_mode')
+    ui.button(icon='brightness_6', on_click=dark.toggle).props('flat round').classes('mode-toggle')
 
-with ui.column().classes('w-full items-center q-pt-xl'):
-    ui.label(lesson['title']).classes('title fade-in')
-    ui.label(lesson['summary']).classes('subtitle fade-in-2')
-    with ui.row().classes('q-mt-lg fade-in-2'):
-        with ui.card().classes('panel').style('max-width: 420px'):
-            ui.label('Weak prompt').classes('subtitle')
-            ui.label(lesson['bad_prompt'])
-        with ui.card().classes('panel').style('max-width: 420px'):
-            ui.label('Strong prompt').classes('subtitle')
-            ui.label(lesson['good_prompt'])
-    ui.label(lesson['takeaway']).classes('subtitle')
 
-ui.run()
+@ui.page('/')
+def home_page():
+    setup_page()
+    with ui.column().classes('w-full items-center q-pt-xl'):
+        ui.label('Cue-Smith').classes('title fade-in')
+        ui.label('Learn to prompt AI, one lesson at a time.').classes('subtitle fade-in-2')
+        with ui.column().classes('q-mt-lg fade-in-2'):
+            for lesson in list_lessons():
+                with ui.link(target=f"/lesson/{lesson['id']}").classes('card-link'):
+                    with ui.card().classes('panel').style('width: 480px; max-width: 90vw'):
+                        ui.label(f"Lesson {lesson['id']}").classes('subtitle')
+                        ui.label(lesson['title']).classes('card-title')
+                        ui.label(lesson['summary'])
+
+
+@ui.page('/lesson/{number}')
+def lesson_page(number: int):
+    setup_page()
+    try:
+        lesson = load_lesson(number)
+    except FileNotFoundError:
+        with ui.column().classes('w-full items-center q-pt-xl'):
+            ui.label('Lesson not found').classes('title')
+            ui.link('Back to all lessons', '/').classes('subtitle card-link')
+        return
+
+    with ui.column().classes('w-full items-center q-pt-xl'):
+        ui.link('← All lessons', '/').classes('subtitle card-link')
+        ui.label(lesson['title']).classes('title fade-in')
+        ui.label(lesson['summary']).classes('subtitle fade-in-2')
+        with ui.row().classes('q-mt-lg fade-in-2'):
+            with ui.card().classes('panel').style('max-width: 420px'):
+                ui.label('Weak prompt').classes('subtitle')
+                ui.label(lesson['bad_prompt'])
+            with ui.card().classes('panel').style('max-width: 420px'):
+                ui.label('Strong prompt').classes('subtitle')
+                ui.label(lesson['good_prompt'])
+        ui.label(lesson['takeaway']).classes('subtitle')
+
+
+ui.run(storage_secret='cue-smith-dev-secret')
