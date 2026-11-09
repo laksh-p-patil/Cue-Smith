@@ -58,6 +58,33 @@ body {
     font-size: 17px;
     color: var(--muted);
 }
+.lesson-body {
+    width: 100%;
+    max-width: 880px;
+    padding: 0 20px;
+}
+.section-title {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-top: 36px;
+}
+.body-text {
+    font-size: 17px;
+    line-height: 1.6;
+    max-width: 720px;
+    color: var(--text);
+}
+.part-name {
+    font-weight: 600;
+    color: var(--text);
+}
+.quote {
+    font-style: italic;
+    color: var(--muted);
+}
 .card-link {
     text-decoration: none;
     color: inherit;
@@ -127,14 +154,40 @@ def lesson_page(number: int):
         ui.link('← All lessons', '/').classes('subtitle card-link')
         ui.label(lesson['title']).classes('title fade-in')
         ui.label(lesson['summary']).classes('subtitle fade-in-2')
-        with ui.row().classes('q-mt-lg fade-in-2'):
-            with ui.card().classes('panel').style('max-width: 420px'):
-                ui.label('Weak prompt').classes('subtitle')
-                ui.label(lesson['bad_prompt'])
-            with ui.card().classes('panel').style('max-width: 420px'):
-                ui.label('Strong prompt').classes('subtitle')
-                ui.label(lesson['good_prompt'])
-        ui.label(lesson['takeaway']).classes('subtitle')
+
+        with ui.column().classes('lesson-body items-start q-mt-lg fade-in-2'):
+            if lesson.get('concept'):
+                ui.label('The idea').classes('section-title')
+                for paragraph in lesson['concept']:
+                    ui.label(paragraph).classes('body-text')
+
+            with ui.row().classes('w-full justify-center q-mt-lg'):
+                with ui.card().classes('panel').style('max-width: 420px'):
+                    ui.label('Weak prompt').classes('subtitle')
+                    ui.label(lesson['bad_prompt'])
+                with ui.card().classes('panel').style('max-width: 420px'):
+                    ui.label('Strong prompt').classes('subtitle')
+                    ui.label(lesson['good_prompt'])
+
+            if lesson.get('breakdown'):
+                ui.label('Why the strong prompt works').classes('section-title')
+                for item in lesson['breakdown']:
+                    with ui.column().classes('q-mb-sm'):
+                        ui.label(item['part']).classes('part-name')
+                        ui.label(f"“{item['quote']}”").classes('quote')
+                        ui.label(item['why']).classes('body-text')
+
+            if lesson.get('mistakes'):
+                ui.label('Common mistakes').classes('section-title')
+                for mistake in lesson['mistakes']:
+                    ui.label(f'• {mistake}').classes('body-text')
+
+            if lesson.get('try_it'):
+                with ui.card().classes('panel w-full q-mt-lg'):
+                    ui.label('Try it yourself').classes('card-title')
+                    ui.label(lesson['try_it']).classes('body-text')
+
+            ui.label(lesson['takeaway']).classes('subtitle q-mt-lg')
 
 
 ui.run(storage_secret='cue-smith-dev-secret')

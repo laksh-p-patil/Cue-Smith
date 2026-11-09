@@ -1,8 +1,40 @@
 {
     "id": 2,
     "title": "Anatomy of a prompt",
-    "summary": "A good prompt says who it's for, what you want and what shape the answer takes.",
+    "summary": "A good prompt says who it’s for, what you want and what shape the answer takes.",
+    "concept": [
+        "Weak prompts are often missing the same few things. A reliable prompt usually covers four parts: context (who you are and the situation), task (what you want done), constraints (limits such as time, length or topics) and format (how the answer should look).",
+        "You don’t need all four every time, and a quick question can be one line. But when an answer comes back wrong or useless, the fix is usually to add the missing part, not to send the same request again."
+    ],
     "bad_prompt": "Help me study for my exam.",
-    "good_prompt": "I'm a first-year engineering student with a physics exam in 3 days. Make a 3-day study plan, 90 minutes per day, covering Newton's laws and friction. Give it as a table.",
-    "takeaway": "Give context, a task and a format. Then check the answer."
+    "good_prompt": "I’m a first-year engineering student with a physics exam in 3 days. Make a 3-day study plan, 90 minutes per day, covering Newton’s laws and friction. Give it as a table.",
+    "breakdown": [
+        {
+            "part": "Context",
+            "quote": "I’m a first-year engineering student with a physics exam in 3 days",
+            "why": "Gives the situation, so the plan fits a real deadline and a real level."
+        },
+        {
+            "part": "Task",
+            "quote": "Make a 3-day study plan",
+            "why": "Says exactly what to produce."
+        },
+        {
+            "part": "Constraints",
+            "quote": "90 minutes per day, covering Newton’s laws and friction",
+            "why": "Sets a time limit and the exact topics, so the plan isn’t padded or off-syllabus."
+        },
+        {
+            "part": "Format",
+            "quote": "Give it as a table",
+            "why": "A table is easy to read at a glance and to paste into your notes."
+        }
+    ],
+    "mistakes": [
+        "Asking for help with no task, such as “help me study”.",
+        "Leaving out limits like time, length or topic, then getting a plan you can’t follow.",
+        "Sending the same prompt again and hoping for a different result, instead of adding the missing part."
+    ],
+    "try_it": "Take a task you have this week, such as a lab write-up or an assignment. Write a prompt with all four parts and send it. Note which part changed the answer most.",
+    "takeaway": "Give context, a task, limits and a format. If the answer is bad, add the part that’s missing."
 }

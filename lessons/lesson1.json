@@ -1,8 +1,41 @@
 {
     "id": 1,
-    "title": "What AI is and isn't",
-    "summary": "AI predicts likely text. It sounds sure even when it's wrong.",
+    "title": "What AI is and isn’t",
+    "summary": "AI predicts likely text. It sounds sure even when it’s wrong.",
+    "concept": [
+        "Chatbots like ChatGPT, Claude and Gemini are trained on a huge amount of text. When you send a message, they predict what text is likely to come next and write that. They are good at explaining, summarising, rewriting and brainstorming.",
+        "They do not understand your question the way a teacher does, and unless a search tool is switched on, they are not looking anything up. So a chatbot can state a wrong date, an invented source or a wrong formula in the same calm tone as a right answer. This is called hallucination.",
+        "That gives you two jobs: ask clearly, and check what comes back."
+    ],
     "bad_prompt": "Tell me about the French Revolution.",
-    "good_prompt": "Explain the main causes of the French Revolution in 5 bullet points for a first-year student. Mark anything you're unsure about.",
-    "takeaway": "Say who it's for, how long, and what format you want."
+    "good_prompt": "Explain the main causes of the French Revolution in 5 bullet points for a first-year student. Mark anything you’re unsure about.",
+    "breakdown": [
+        {
+            "part": "Task",
+            "quote": "Explain the main causes of the French Revolution",
+            "why": "Says what to do. The weak prompt names a topic but gives no job, so the AI has to guess whether you want a summary, a timeline or an essay."
+        },
+        {
+            "part": "Audience",
+            "quote": "for a first-year student",
+            "why": "Sets the level. Without it, the answer can come out too basic or too advanced."
+        },
+        {
+            "part": "Size and format",
+            "quote": "in 5 bullet points",
+            "why": "Limits the length and shape, so you get something you can scan instead of a wall of text."
+        },
+        {
+            "part": "Honesty check",
+            "quote": "Mark anything you’re unsure about",
+            "why": "Can surface some weak spots, but it won’t catch every error. You still check names, dates and numbers yourself."
+        }
+    ],
+    "mistakes": [
+        "Naming a topic without saying what you want done with it.",
+        "Copying names, dates, quotes or sources into your work without checking them.",
+        "Treating a confident tone as proof that the answer is right."
+    ],
+    "try_it": "Pick a topic from one of your classes. Write a prompt with a task, an audience and a format, then send it. Choose two facts from the answer and check them against your textbook or notes.",
+    "takeaway": "Say what you want done, who it’s for and what shape the answer should take. Then check the facts yourself."
 }
