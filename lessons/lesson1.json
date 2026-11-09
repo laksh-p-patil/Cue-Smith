@@ -37,5 +37,46 @@
         "Treating a confident tone as proof that the answer is right."
     ],
     "try_it": "Pick a topic from one of your classes. Write a prompt with a task, an audience and a format, then send it. Choose two facts from the answer and check them against your textbook or notes.",
-    "takeaway": "Say what you want done, who it’s for and what shape the answer should take. Then check the facts yourself."
+    "takeaway": "Say what you want done, who it’s for and what shape the answer should take. Then check the facts yourself.",
+    "quiz": [
+        {
+            "question": "Why can a chatbot state a wrong date in the same calm tone as a right one?",
+            "options": [
+                "It predicts likely text and, unless a search tool is on, isn’t looking anything up",
+                "It is deliberately trying to trick you",
+                "It checks every fact in a database before answering",
+                "It only gets facts wrong when your prompt is very short"
+            ],
+            "answer": 0,
+            "explain": "It writes what is likely to come next, so a wrong fact can sound just as sure as a right one."
+        },
+        {
+            "question": "What is a hallucination?",
+            "options": [
+                "A chatbot refusing to answer your question",
+                "A confident-sounding answer that contains a wrong or invented fact",
+                "An answer that is too long to read",
+                "A chat window that freezes while it works"
+            ],
+            "answer": 1,
+            "explain": "Hallucination is when the AI states something wrong, such as an invented source, as calmly as something true."
+        },
+        {
+            "question": "You add “Mark anything you’re unsure about” to your prompt. What should you still do?",
+            "options": [
+                "Nothing, the AI will catch every error",
+                "Only check the answer if it sounds unsure",
+                "Check names, dates and numbers yourself",
+                "Send the same prompt again to confirm it"
+            ],
+            "answer": 2,
+            "explain": "That line can surface some weak spots, but it won’t catch every error, so you still check the facts."
+        }
+    ],
+    "compare": {
+        "prompt_a": "Tell me about the French Revolution.",
+        "prompt_b": "Explain the main causes of the French Revolution in 5 bullet points for a first-year student. Mark anything you’re unsure about.",
+        "better": "b",
+        "why": "It states a task, an audience and a format, while the other only names a topic and leaves the AI to guess what you want."
+    }
 }

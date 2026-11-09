@@ -1,5 +1,6 @@
 from nicegui import app, ui
 from loader import load_lesson, list_lessons
+from pages.check import check_section
 
 
 def lesson_page(number: int):
@@ -27,6 +28,8 @@ def lesson_page(number: int):
                 ui.label(lesson['good_prompt'])
 
         ui.label(lesson['takeaway']).classes('subtitle q-mt-md')
+
+        check_section(number, lesson)
 
         if has_details:
             def toggle():

@@ -5,6 +5,7 @@ from loader import list_lessons
 def home():
     lessons = list_lessons()
     completed = app.storage.user.setdefault('completed', [])
+    quiz_best = app.storage.user.setdefault('quiz_best', {})
     done_count = sum(1 for lesson in lessons if lesson['id'] in completed)
 
     with ui.column().classes('w-full items-center q-pt-xl'):
@@ -19,4 +20,6 @@ def home():
                         check = ' ✓' if lesson['id'] in completed else ''
                         ui.label(f"Lesson {lesson['id']}{check}").classes('subtitle')
                         ui.label(lesson['title']).classes('card-title')
+                        if str(lesson['id']) in quiz_best and lesson.get('quiz'):
+                            ui.label(f"Quiz {quiz_best[str(lesson['id'])]}/{len(lesson['quiz'])}").classes('subtitle')
                         ui.label(lesson['summary'])

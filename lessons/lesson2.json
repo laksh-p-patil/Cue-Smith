@@ -36,5 +36,46 @@
         "Sending the same prompt again and hoping for a different result, instead of adding the missing part."
     ],
     "try_it": "Take a task you have this week, such as a lab write-up or an assignment. Write a prompt with all four parts and send it. Note which part changed the answer most.",
-    "takeaway": "Give context, a task, limits and a format. If the answer is bad, add the part that’s missing."
+    "takeaway": "Give context, a task, limits and a format. If the answer is bad, add the part that’s missing.",
+    "quiz": [
+        {
+            "question": "Which set lists the four parts a reliable prompt usually covers?",
+            "options": [
+                "Task, audience, tone, length",
+                "Context, task, constraints, format",
+                "Context, topic, length, source",
+                "Role, task, examples, deadline"
+            ],
+            "answer": 1,
+            "explain": "The four parts are context, task, constraints and format."
+        },
+        {
+            "question": "In the strong prompt, “Give it as a table” is which part?",
+            "options": [
+                "Context",
+                "Task",
+                "Constraints",
+                "Format"
+            ],
+            "answer": 3,
+            "explain": "It tells the AI how the answer should look, which is the format."
+        },
+        {
+            "question": "An answer comes back wrong or useless. What does the lesson say usually fixes it?",
+            "options": [
+                "Sending the same request again",
+                "Making the prompt as short as possible",
+                "Switching to a different chatbot",
+                "Adding the part that is missing"
+            ],
+            "answer": 3,
+            "explain": "The fix is usually to add the missing part, not to send the same request again."
+        }
+    ],
+    "compare": {
+        "prompt_a": "I’m a first-year engineering student with a physics exam in 3 days. Make a 3-day study plan, 90 minutes per day, covering Newton’s laws and friction. Give it as a table.",
+        "prompt_b": "Help me study for my exam.",
+        "better": "a",
+        "why": "It gives context, a task, constraints and a format, while the other has no task, limits or format."
+    }
 }
