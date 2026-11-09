@@ -1,5 +1,6 @@
 from nicegui import app, ui
-from loader import load_lesson, list_lessons
+from pages.home import home
+from pages.lesson import lesson_page
 
 CSS = '''
 :root {
@@ -218,13 +219,6 @@ html.has-cue-cursor input, html.has-cue-cursor textarea {
 .fade-in-2 { animation: fadeUp 0.6s ease 0.15s backwards; }
 '''
 
-CURSOR_HEAD_JS = """
-<script>
-if (matchMedia('(hover: hover) and (pointer: fine)').matches) document.documentElement.classList.add('has-cue-cursor');
-setTimeout(function () { if (!window.__cueReady) document.documentElement.classList.remove('has-cue-cursor'); }, 3000);
-</script>
-"""
-
 CURSOR_JS = """
 <script>
 (function () {
@@ -233,16 +227,13 @@ CURSOR_JS = """
   var root = document.documentElement, dot = document.createElement('div');
   dot.className = 'cue-cursor';
   document.body.appendChild(dot);
-  var saved = (sessionStorage.getItem('cue-xy') || '').split(',');
-  var tx = +saved[0] || 0, ty = +saved[1] || 0, x = tx, y = ty;
+  var tx = 0, ty = 0, x = 0, y = 0;
   var ease = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0.22;
-  if (saved.length === 2) dot.classList.add('on');
   addEventListener('mousemove', function (e) {
     tx = e.clientX; ty = e.clientY;
     root.classList.add('has-cue-cursor');
     dot.classList.add('on');
   });
-  addEventListener('pagehide', function () { sessionStorage.setItem('cue-xy', tx + ',' + ty); });
   root.addEventListener('mouseleave', function () { dot.classList.remove('on'); });
   document.addEventListener('mouseover', function (e) {
     dot.classList.toggle('big', !!e.target.closest('a, button, .q-btn, .slab'));
@@ -262,7 +253,6 @@ CURSOR_JS = """
 def setup_page():
     is_dark = app.storage.user.setdefault('dark_mode', True)
     bg, text = ('#171718', '#f2f2f2') if is_dark else ('#ececec', '#111111')
-    ui.add_head_html(CURSOR_HEAD_JS)
     ui.add_head_html(f'''
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&display=swap" rel="stylesheet">
@@ -280,82 +270,9 @@ def setup_page():
         .props('flat round').classes('mode-toggle glass-btn')
 
 
-@ui.page('/')
-def home_page():
+def root():
     setup_page()
-    with ui.column().classes('w-full items-center q-pt-xl'):
-        with ui.column().classes('slab items-center gap-1 fade-in'):
-            ui.label('Cue-Smith').classes('title')
-            ui.label('Learn to prompt AI, one lesson at a time.').classes('subtitle')
-        with ui.column().classes('q-mt-lg fade-in-2'):
-            for lesson in list_lessons():
-                with ui.link(target=f"/lesson/{lesson['id']}").classes('card-link'):
-                    with ui.card().classes('panel').style('width: 480px; max-width: 90vw'):
-                        ui.label(f"Lesson {lesson['id']}").classes('subtitle')
-                        ui.label(lesson['title']).classes('card-title')
-                        ui.label(lesson['summary'])
+    ui.sub_pages({'/': home, '/lesson/{number}': lesson_page}).classes('w-full')
 
 
-@ui.page('/lesson/{number}')
-def lesson_page(number: int):
-    setup_page()
-    try:
-        lesson = load_lesson(number)
-    except FileNotFoundError:
-        with ui.column().classes('w-full items-center q-pt-xl'):
-            ui.label('Lesson not found').classes('title')
-            ui.link('Back to all lessons', '/').classes('subtitle card-link')
-        return
-
-    has_details = any(lesson.get(key) for key in ('concept', 'breakdown', 'mistakes', 'try_it'))
-
-    with ui.column().classes('w-full items-center q-pt-xl'):
-        ui.link('← All lessons', '/').classes('subtitle card-link')
-        ui.label(lesson['title']).classes('title fade-in')
-        ui.label(lesson['summary']).classes('subtitle fade-in-2')
-
-        with ui.row().classes('w-full justify-center q-mt-lg fade-in-2'):
-            with ui.card().classes('panel').style('max-width: 420px'):
-                ui.label('Weak prompt').classes('subtitle')
-                ui.label(lesson['bad_prompt'])
-            with ui.card().classes('panel').style('max-width: 420px'):
-                ui.label('Strong prompt').classes('subtitle')
-                ui.label(lesson['good_prompt'])
-
-        ui.label(lesson['takeaway']).classes('subtitle q-mt-md')
-
-        if has_details:
-            def toggle():
-                details.set_visibility(not details.visible)
-                toggle_button.set_text('Show less' if details.visible else 'Show more details')
-
-            toggle_button = ui.button('Show more details', on_click=toggle, color=None) \
-                .props('flat no-caps').classes('glass-btn q-mt-lg')
-
-            with ui.column().classes('lesson-body items-start fade-in') as details:
-                if lesson.get('concept'):
-                    ui.label('The idea').classes('section-title')
-                    for paragraph in lesson['concept']:
-                        ui.label(paragraph).classes('body-text')
-
-                if lesson.get('breakdown'):
-                    ui.label('Why the strong prompt works').classes('section-title')
-                    for item in lesson['breakdown']:
-                        with ui.column().classes('q-mb-sm'):
-                            ui.label(item['part']).classes('part-name')
-                            ui.label(f"“{item['quote']}”").classes('quote')
-                            ui.label(item['why']).classes('body-text')
-
-                if lesson.get('mistakes'):
-                    ui.label('Common mistakes').classes('section-title')
-                    for mistake in lesson['mistakes']:
-                        ui.label(f'• {mistake}').classes('body-text')
-
-                if lesson.get('try_it'):
-                    with ui.card().classes('panel w-full q-mt-lg'):
-                        ui.label('Try it yourself').classes('card-title')
-                        ui.label(lesson['try_it']).classes('body-text')
-            details.set_visibility(False)
-
-
-ui.run(storage_secret='cue-smith-dev-secret')
+ui.run(root, storage_secret='cue-smith-dev-secret')
