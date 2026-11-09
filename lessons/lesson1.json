@@ -1,0 +1,8 @@
+{
+    "id": 1,
+    "title": "What AI is and isn't",
+    "summary": "AI predicts likely text. It sounds sure even when it's wrong.",
+    "bad_prompt": "Tell me about the French Revolution.",
+    "good_prompt": "Explain the main causes of the French Revolution in 5 bullet points for a first-year student. Mark anything you're unsure about.",
+    "takeaway": "Say who it's for, how long, and what format you want."
+}
