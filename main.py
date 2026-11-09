@@ -10,6 +10,11 @@ CSS = '''
     --muted: #6e6e73;
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
     --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.08);
+    --btn-bg: rgba(255, 255, 255, 0.55);
+    --btn-border: rgba(0, 0, 0, 0.08);
+    --btn-highlight: rgba(255, 255, 255, 0.9);
+    --btn-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
+    --btn-shadow-hover: 0 8px 22px rgba(0, 0, 0, 0.14);
 }
 body.body--dark {
     --bg: #121214;
@@ -19,6 +24,11 @@ body.body--dark {
     --muted: #a1a1a6;
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.6);
+    --btn-bg: rgba(255, 255, 255, 0.10);
+    --btn-border: rgba(255, 255, 255, 0.18);
+    --btn-highlight: rgba(255, 255, 255, 0.30);
+    --btn-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    --btn-shadow-hover: 0 8px 22px rgba(0, 0, 0, 0.55);
 }
 body {
     background: var(--bg) !important;
@@ -40,6 +50,44 @@ body {
 .q-card.panel:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-hover);
+}
+.q-btn.glass-btn {
+    background: var(--btn-bg) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--btn-border);
+    border-radius: 999px;
+    padding: 10px 28px;
+    font-size: 16px;
+    font-weight: 500;
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    box-shadow:
+        inset 0 1px 0 var(--btn-highlight),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.05),
+        var(--btn-shadow);
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+.q-btn.glass-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 55%);
+    pointer-events: none;
+}
+.q-btn.glass-btn:hover {
+    transform: translateY(-1px) scale(1.03);
+    box-shadow:
+        inset 0 1px 0 var(--btn-highlight),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.05),
+        var(--btn-shadow-hover);
+}
+.q-btn.glass-btn:active {
+    transform: scale(0.96);
+}
+.q-btn.glass-btn.q-btn--round {
+    padding: 0;
 }
 .title {
     font-family: "Fraunces", Georgia, serif;
@@ -94,7 +142,6 @@ body {
     top: 16px;
     right: 16px;
     z-index: 10;
-    color: var(--text) !important;
 }
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(12px); }
@@ -121,7 +168,7 @@ def setup_page():
     ''')
     ui.add_css(CSS)
     dark = ui.dark_mode().bind_value(app.storage.user, 'dark_mode')
-    ui.button(icon='brightness_6', on_click=dark.toggle).props('flat round').classes('mode-toggle')
+    ui.button(icon='brightness_6', on_click=dark.toggle).props('flat round').classes('mode-toggle glass-btn')
 
 
 @ui.page('/')
@@ -150,44 +197,55 @@ def lesson_page(number: int):
             ui.link('Back to all lessons', '/').classes('subtitle card-link')
         return
 
+    has_details = any(lesson.get(key) for key in ('concept', 'breakdown', 'mistakes', 'try_it'))
+
     with ui.column().classes('w-full items-center q-pt-xl'):
         ui.link('← All lessons', '/').classes('subtitle card-link')
         ui.label(lesson['title']).classes('title fade-in')
         ui.label(lesson['summary']).classes('subtitle fade-in-2')
 
-        with ui.column().classes('lesson-body items-start q-mt-lg fade-in-2'):
-            if lesson.get('concept'):
-                ui.label('The idea').classes('section-title')
-                for paragraph in lesson['concept']:
-                    ui.label(paragraph).classes('body-text')
+        with ui.row().classes('w-full justify-center q-mt-lg fade-in-2'):
+            with ui.card().classes('panel').style('max-width: 420px'):
+                ui.label('Weak prompt').classes('subtitle')
+                ui.label(lesson['bad_prompt'])
+            with ui.card().classes('panel').style('max-width: 420px'):
+                ui.label('Strong prompt').classes('subtitle')
+                ui.label(lesson['good_prompt'])
 
-            with ui.row().classes('w-full justify-center q-mt-lg'):
-                with ui.card().classes('panel').style('max-width: 420px'):
-                    ui.label('Weak prompt').classes('subtitle')
-                    ui.label(lesson['bad_prompt'])
-                with ui.card().classes('panel').style('max-width: 420px'):
-                    ui.label('Strong prompt').classes('subtitle')
-                    ui.label(lesson['good_prompt'])
+        ui.label(lesson['takeaway']).classes('subtitle q-mt-md')
 
-            if lesson.get('breakdown'):
-                ui.label('Why the strong prompt works').classes('section-title')
-                for item in lesson['breakdown']:
-                    with ui.column().classes('q-mb-sm'):
-                        ui.label(item['part']).classes('part-name')
-                        ui.label(f"“{item['quote']}”").classes('quote')
-                        ui.label(item['why']).classes('body-text')
+        if has_details:
+            def toggle():
+                details.set_visibility(not details.visible)
+                toggle_button.set_text('Show less' if details.visible else 'Show more details')
 
-            if lesson.get('mistakes'):
-                ui.label('Common mistakes').classes('section-title')
-                for mistake in lesson['mistakes']:
-                    ui.label(f'• {mistake}').classes('body-text')
+            toggle_button = ui.button('Show more details', on_click=toggle) \
+                .props('flat no-caps').classes('glass-btn q-mt-lg')
 
-            if lesson.get('try_it'):
-                with ui.card().classes('panel w-full q-mt-lg'):
-                    ui.label('Try it yourself').classes('card-title')
-                    ui.label(lesson['try_it']).classes('body-text')
+            with ui.column().classes('lesson-body items-start fade-in') as details:
+                if lesson.get('concept'):
+                    ui.label('The idea').classes('section-title')
+                    for paragraph in lesson['concept']:
+                        ui.label(paragraph).classes('body-text')
 
-            ui.label(lesson['takeaway']).classes('subtitle q-mt-lg')
+                if lesson.get('breakdown'):
+                    ui.label('Why the strong prompt works').classes('section-title')
+                    for item in lesson['breakdown']:
+                        with ui.column().classes('q-mb-sm'):
+                            ui.label(item['part']).classes('part-name')
+                            ui.label(f"“{item['quote']}”").classes('quote')
+                            ui.label(item['why']).classes('body-text')
+
+                if lesson.get('mistakes'):
+                    ui.label('Common mistakes').classes('section-title')
+                    for mistake in lesson['mistakes']:
+                        ui.label(f'• {mistake}').classes('body-text')
+
+                if lesson.get('try_it'):
+                    with ui.card().classes('panel w-full q-mt-lg'):
+                        ui.label('Try it yourself').classes('card-title')
+                        ui.label(lesson['try_it']).classes('body-text')
+            details.set_visibility(False)
 
 
 ui.run(storage_secret='cue-smith-dev-secret')
