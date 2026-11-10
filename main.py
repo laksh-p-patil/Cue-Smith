@@ -24,6 +24,8 @@ CSS = '''
     --cur-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
     --cur-ring-fill: rgba(0, 0, 0, 0.05);
     --cur-ring-edge: rgba(0, 0, 0, 0.30);
+    --ok: #34c759;
+    --bad: #ff3b30;
 }
 body.body--dark {
     --page-bg: linear-gradient(180deg, #1c1c1e 0%, #121213 100%);
@@ -45,6 +47,8 @@ body.body--dark {
     --cur-shadow: 0 0 14px rgba(255, 255, 255, 0.28), 0 3px 10px rgba(0, 0, 0, 0.60);
     --cur-ring-fill: rgba(255, 255, 255, 0.08);
     --cur-ring-edge: rgba(255, 255, 255, 0.55);
+    --ok: #30d158;
+    --bad: #ff453a;
 }
 body, .q-btn, .q-card, .nicegui-content {
     font-family: var(--font) !important;
@@ -112,6 +116,37 @@ body {
 .q-btn.glass-btn.q-btn--round {
     padding: 0;
     background: var(--round-fill) !important;
+}
+.q-btn.glass-btn.opt-ok,
+.q-btn.glass-btn.opt-bad {
+    opacity: 1 !important;
+}
+.q-btn.glass-btn.opt-ok {
+    background: linear-gradient(color-mix(in srgb, var(--ok) 18%, transparent),
+                                color-mix(in srgb, var(--ok) 18%, transparent)), var(--fill) !important;
+    border-color: var(--ok) !important;
+    animation: pop 0.3s ease;
+}
+.q-btn.glass-btn.opt-bad {
+    background: linear-gradient(color-mix(in srgb, var(--bad) 18%, transparent),
+                                color-mix(in srgb, var(--bad) 18%, transparent)), var(--fill) !important;
+    border-color: var(--bad) !important;
+    animation: shake 0.3s ease;
+}
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .q-btn.glass-btn.opt-ok, .q-btn.glass-btn.opt-bad { animation: none; }
 }
 .title {
     font-size: 40px;

@@ -21,6 +21,15 @@ def _option_button(text, on_click):
         .style('white-space: normal; text-align: left; border-radius: 28px; max-width: 100%')
 
 
+def _mark(button, state):
+    """Show 'ok', 'bad' or (None) the neutral look on an option; the icon means colour isn't the only cue."""
+    button.classes(remove='opt-ok opt-bad')
+    button.props(remove='icon-right')
+    if state:
+        button.classes(f'opt-{state}')
+        button.props(f'icon-right={"check" if state == "ok" else "close"}')
+
+
 def _quiz(number, quiz):
     answered = {}
     best_store = app.storage.user.setdefault('quiz_best', {})
@@ -50,11 +59,11 @@ def _quiz(number, quiz):
                 correct = choice == question['answer']
                 for button in buttons:
                     button.disable()
+                _mark(buttons[choice], 'ok' if correct else 'bad')
                 if correct:
                     result.set_text(f'Correct ✓ {question["explain"]}')
                 else:
-                    right = question['options'][question['answer']]
-                    result.set_text(f'Incorrect. The answer is “{right}”. {question["explain"]}')
+                    result.set_text('Incorrect. Try again.')
                 result.set_visibility(True)
                 retry.set_visibility(True)
                 answered[index] = correct
@@ -63,6 +72,7 @@ def _quiz(number, quiz):
             def reset(index=index, buttons=buttons, result=result, retry=retry):
                 for button in buttons:
                     button.enable()
+                    _mark(button, None)
                 result.set_visibility(False)
                 retry.set_visibility(False)
                 answered.pop(index, None)
@@ -89,14 +99,19 @@ def _compare(compare):
         def pick(choice):
             for button in buttons:
                 button.disable()
-            verdict = 'Correct ✓' if choice == compare['better'] else 'Incorrect.'
-            result.set_text(f'{verdict} Prompt {compare["better"].upper()} is better. {compare["why"]}')
+            correct = choice == compare['better']
+            _mark(buttons[('a', 'b').index(choice)], 'ok' if correct else 'bad')
+            if correct:
+                result.set_text(f'Correct ✓ Prompt {compare["better"].upper()} is better. {compare["why"]}')
+            else:
+                result.set_text('Incorrect. Try again.')
             result.set_visibility(True)
             retry.set_visibility(True)
 
         def reset():
             for button in buttons:
                 button.enable()
+                _mark(button, None)
             result.set_visibility(False)
             retry.set_visibility(False)
 
