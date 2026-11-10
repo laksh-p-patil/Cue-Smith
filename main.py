@@ -4,12 +4,23 @@ from nicegui import app, ui
 from pages.home import home
 from pages.lesson import lesson_page
 
+def _motion_rules(prefix):
+    """CSS that switches off animations, transitions and hover lifts under the given selector prefix."""
+    return (
+        f'{prefix} *, {prefix} *::before, {prefix} *::after '
+        '{ animation: none !important; transition: none !important; scroll-behavior: auto !important; }\n'
+        f'{prefix} .q-card.panel:hover, {prefix} .slab:hover, {prefix} .slab:active, '
+        f'{prefix} .q-btn.glass-btn:hover, {prefix} .q-btn.glass-btn:active '
+        '{ transform: none !important; }\n'
+    )
+
+
 CSS = '''
 :root {
     --font: "Fraunces", Georgia, "Times New Roman", serif;
     --page-bg: linear-gradient(180deg, #f3f3f3 0%, #e4e4e4 100%);
     --text: #111111;
-    --muted: #7b7b7b;
+    --muted: #666666;
     --fill: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.12));
     --rim: rgba(255, 255, 255, 0.95);
     --inner-light: rgba(255, 255, 255, 0.9);
@@ -28,6 +39,7 @@ CSS = '''
     --cur-ring-edge: rgba(0, 0, 0, 0.30);
     --ok: #34c759;
     --bad: #ff3b30;
+    --focus: #0b3fb5;
 }
 body.body--dark {
     --page-bg: linear-gradient(180deg, #1c1c1e 0%, #121213 100%);
@@ -51,11 +63,13 @@ body.body--dark {
     --cur-ring-edge: rgba(255, 255, 255, 0.55);
     --ok: #30d158;
     --bad: #ff453a;
+    --focus: #8ab4ff;
 }
 body, .q-btn, .q-card, .nicegui-content {
     font-family: var(--font) !important;
 }
 body {
+    font-size: 0.875rem;
     background: var(--page-bg) !important;
     background-attachment: fixed !important;
     color: var(--text) !important;
@@ -248,6 +262,70 @@ html.has-cue-cursor, html.has-cue-cursor * {
 html.has-cue-cursor input, html.has-cue-cursor textarea {
     cursor: text !important;
 }
+html.nc .cue-cursor {
+    display: none !important;
+}
+html.nc.has-cue-cursor, html.nc.has-cue-cursor * {
+    cursor: auto !important;
+}
+html.nc.has-cue-cursor :is(a, button, .q-btn, .slab, label, [role="button"]),
+html.nc.has-cue-cursor :is(a, button, .q-btn, .slab, label, [role="button"]) * {
+    cursor: pointer !important;
+}
+html.nc.has-cue-cursor input, html.nc.has-cue-cursor textarea {
+    cursor: text !important;
+}
+.q-btn {
+    font-size: 0.875rem;
+}
+:focus-visible {
+    outline: 2px solid var(--focus) !important;
+    outline-offset: 2px !important;
+}
+.q-dialog__inner [tabindex="-1"]:focus-visible {
+    outline: none !important;
+}
+.card-link:focus-visible {
+    border-radius: 28px;
+}
+.q-card.panel.a11y-panel {
+    width: min(26rem, 90vw);
+    max-width: 90vw !important;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+    gap: 0.75rem;
+}
+.q-card.panel.a11y-panel:hover {
+    transform: none;
+}
+.a11y-panel .q-btn-group {
+    width: 100%;
+    flex-wrap: wrap;
+}
+.a11y-panel .q-btn-group .q-btn {
+    flex: 1 1 auto;
+    min-height: 44px;
+    white-space: normal;
+    font-size: 1rem;
+    background: var(--fill) !important;
+    color: var(--text) !important;
+}
+.a11y-panel .q-btn-group .q-btn.q-btn--active {
+    font-weight: 600;
+    box-shadow: inset 0 0 0 2px var(--text) !important;
+}
+.a11y-panel .q-toggle {
+    min-height: 44px;
+    font-size: 1rem;
+}
+.a11y-panel .q-toggle__inner {
+    font-size: 2.5rem;
+    color: var(--muted) !important;
+}
+.a11y-panel .q-toggle__inner--truthy {
+    color: var(--text) !important;
+}
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
@@ -301,7 +379,8 @@ html.has-cue-cursor input, html.has-cue-cursor textarea {
         min-height: 44px;
     }
 }
-'''
+''' + _motion_rules('html.rm') + '@media (prefers-reduced-motion: reduce) {\n' \
+    + _motion_rules('html:not(.rm-off)') + '}\n'
 
 CURSOR_JS = """
 <script>
@@ -325,7 +404,7 @@ CURSOR_JS = """
   addEventListener('mousedown', function () { dot.classList.add('down'); });
   addEventListener('mouseup', function () { dot.classList.remove('down'); });
   (function loop() {
-    x += (tx - x) * ease; y += (ty - y) * ease;
+    var k = root.classList.contains('rm') ? 1 : ease; x += (tx - x) * k; y += (ty - y) * k;
     dot.style.transform = 'translate(' + x + 'px,' + y + 'px)';
     requestAnimationFrame(loop);
   })();
@@ -334,9 +413,23 @@ CURSOR_JS = """
 """
 
 
+TEXT_SIZES = {100: 'Normal', 125: 'Large', 150: 'Extra large'}
+
+
 def setup_page():
-    is_dark = app.storage.user.setdefault('dark_mode', True)
+    store = app.storage.user
+    is_dark = store.setdefault('dark_mode', True)
+    size = store.setdefault('text_size', 100)
+    if size not in TEXT_SIZES:
+        size = store['text_size'] = 100
+    reduce_motion = store.get('reduce_motion')      # None until the first visit has been checked
+    normal_cursor = store.setdefault('normal_cursor', False)
     bg, text = ('#171718', '#f2f2f2') if is_dark else ('#ececec', '#111111')
+
+    # Rules written into the page head on the server, so text size and motion are right on first paint.
+    head_rules = f'html {{ font-size: {size}%; }}\n' if size != 100 else ''
+    if reduce_motion is True:
+        head_rules += _motion_rules('html:not(.rm-off)')
     ui.add_head_html(f'''
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&display=swap" rel="stylesheet">
@@ -345,13 +438,53 @@ def setup_page():
         background: {bg} !important;
         color: {text} !important;
     }}
+    {head_rules}
     </style>
     ''')
     ui.add_css(CSS)
     ui.add_body_html(CURSOR_JS)
-    dark = ui.dark_mode().bind_value(app.storage.user, 'dark_mode')
-    ui.button(icon='brightness_6', on_click=dark.toggle, color=None) \
-        .props('flat round').classes('mode-toggle glass-btn')
+    dark = ui.dark_mode().bind_value(store, 'dark_mode')
+
+    html = ui.query('html')   # the <html> element: we switch settings on it with classes and a style
+    if reduce_motion is True:
+        html.classes('rm')
+    elif reduce_motion is False:
+        html.classes('rm-off')
+    if normal_cursor:
+        html.classes('nc')
+
+    def set_size(e):
+        store['text_size'] = e.value
+        html.style(f'font-size: {e.value}%')
+
+    def set_motion(e):
+        store['reduce_motion'] = e.value
+        html.classes(remove='rm rm-off').classes('rm' if e.value else 'rm-off')
+
+    def set_cursor(e):
+        store['normal_cursor'] = e.value
+        if e.value:
+            html.classes('nc')
+        else:
+            html.classes(remove='nc')
+
+    with ui.dialog() as panel, ui.card().classes('panel a11y-panel'):
+        ui.label('Accessibility').classes('card-title')
+        ui.label('Text size').classes('part-name')
+        ui.toggle(TEXT_SIZES, value=size, on_change=set_size).props('no-caps unelevated')
+        ui.label('Theme').classes('part-name')
+        ui.toggle({False: 'Light', True: 'Dark'}).props('no-caps unelevated').bind_value(dark)
+        motion_switch = ui.switch('Reduce motion', value=bool(reduce_motion), on_change=set_motion)
+        ui.switch('Normal cursor', value=normal_cursor, on_change=set_cursor)
+
+    ui.button(icon='accessibility_new', on_click=panel.open, color=None) \
+        .props('flat round aria-label="Accessibility settings"').classes('mode-toggle glass-btn')
+
+    if reduce_motion is None:
+        async def detect_system_preference():
+            prefers = await ui.run_javascript("return matchMedia('(prefers-reduced-motion: reduce)').matches")
+            motion_switch.value = bool(prefers)   # fires set_motion, which saves it and applies it
+        ui.timer(0.1, detect_system_preference, once=True)
 
 
 def root():
