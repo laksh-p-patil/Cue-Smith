@@ -13,10 +13,10 @@ def home():
             ui.label('Cue-Smith').classes('title')
             ui.label('Learn to prompt AI, one lesson at a time.').classes('subtitle')
         ui.label(f'{done_count} of {len(lessons)} lessons complete').classes('subtitle q-mt-md fade-in-2')
-        with ui.column().classes('q-mt-lg fade-in-2'):
+        with ui.column().classes('home-grid q-mt-lg fade-in-2'):
             for lesson in lessons:
                 with ui.link(target=f"/lesson/{lesson['id']}").classes('card-link'):
-                    with ui.card().classes('panel').style('width: 480px; max-width: 90vw'):
+                    with ui.card().classes('panel'):
                         check = ' ✓' if lesson['id'] in completed else ''
                         ui.label(f"Lesson {lesson['id']}{check}").classes('subtitle')
                         ui.label(lesson['title']).classes('card-title')

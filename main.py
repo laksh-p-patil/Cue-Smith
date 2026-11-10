@@ -1,3 +1,5 @@
+import os
+
 from nicegui import app, ui
 from pages.home import home
 from pages.lesson import lesson_page
@@ -76,7 +78,7 @@ body {
 }
 .q-card.panel {
     border-radius: 28px;
-    padding: 40px 48px;
+    padding: 2.5rem 3rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .q-card.panel:hover {
@@ -85,7 +87,7 @@ body {
 }
 .slab {
     max-width: 92vw;
-    padding: 44px clamp(28px, 7vw, 80px);
+    padding: 2.75rem clamp(1.75rem, 7vw, 5rem);
     border-radius: 32px;
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
 }
@@ -101,8 +103,8 @@ body {
 }
 .q-btn.glass-btn {
     border-radius: 999px;
-    padding: 10px 28px;
-    font-size: 16px;
+    padding: 0.625rem 1.75rem;
+    font-size: 1rem;
     font-weight: 500;
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
 }
@@ -149,37 +151,37 @@ body {
     .q-btn.glass-btn.opt-ok, .q-btn.glass-btn.opt-bad { animation: none; }
 }
 .title {
-    font-size: 40px;
+    font-size: 2.5rem;
     font-weight: 600;
     letter-spacing: -0.02em;
     color: var(--text);
 }
 .card-title {
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: -0.01em;
     color: var(--text);
 }
 .subtitle {
-    font-size: 17px;
+    font-size: 1.0625rem;
     color: var(--muted);
 }
 .lesson-body {
     width: 100%;
-    max-width: 880px;
-    padding: 0 20px;
+    max-width: 55rem;
+    padding: 0 1.25rem;
 }
 .section-title {
-    font-size: 26px;
+    font-size: 1.625rem;
     font-weight: 600;
     letter-spacing: -0.01em;
     color: var(--text);
-    margin-top: 36px;
+    margin-top: 2.25rem;
 }
 .body-text {
-    font-size: 17px;
+    font-size: 1.0625rem;
     line-height: 1.6;
-    max-width: 720px;
+    max-width: 45rem;
     color: var(--text);
 }
 .part-name {
@@ -252,6 +254,53 @@ html.has-cue-cursor input, html.has-cue-cursor textarea {
 }
 .fade-in { animation: fadeUp 0.6s ease backwards; }
 .fade-in-2 { animation: fadeUp 0.6s ease 0.15s backwards; }
+.nicegui-column.home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 64rem;
+    margin-inline: auto;
+    padding: 0 1rem;
+}
+.home-grid .card-link {
+    display: flex;
+    min-width: 0;
+}
+.home-grid .q-card.panel {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+}
+@media (max-width: 600px) {
+    html, body {
+        overflow-x: hidden;
+    }
+    .q-card.panel {
+        padding: 1.5rem 1.25rem;
+        max-width: 100% !important;
+        overflow-wrap: anywhere;
+    }
+    .q-card.panel.w-full, .card-link, .card-link .q-card.panel {
+        width: 100% !important;
+    }
+    .q-card.panel .q-markdown {
+        overflow-x: auto;
+    }
+    .slab {
+        padding: 1.75rem 1.25rem;
+    }
+    .lesson-body {
+        padding: 0 1rem;
+    }
+    .q-btn.glass-btn {
+        min-height: 44px;
+    }
+    .q-btn.glass-btn.q-btn--round {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
 '''
 
 CURSOR_JS = """
@@ -310,4 +359,9 @@ def root():
     ui.sub_pages({'/': home, '/lesson/{number}': lesson_page}).classes('w-full')
 
 
-ui.run(root, storage_secret='cue-smith-dev-secret')
+STORAGE_SECRET = os.environ.get('CUE_SMITH_SECRET')
+if not STORAGE_SECRET:
+    print('WARNING: CUE_SMITH_SECRET is not set; using an insecure dev secret. Set it before deploying.')
+    STORAGE_SECRET = 'INSECURE-DEV-SECRET-CHANGE-ME'
+
+ui.run(root, storage_secret=STORAGE_SECRET)

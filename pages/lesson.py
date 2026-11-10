@@ -21,7 +21,7 @@ def lesson_page(number: int):
 
         with ui.row().classes('w-full justify-center items-start q-mt-lg fade-in-2'):
             for key, heading in (('bad', 'Weak prompt'), ('good', 'Strong prompt')):
-                with ui.column().classes('items-stretch').style('max-width: 420px'):
+                with ui.column().classes('items-stretch').style('max-width: 26.25rem'):
                     with ui.card().classes('panel'):
                         ui.label(heading).classes('subtitle')
                         ui.label(lesson[f'{key}_prompt'])
@@ -31,7 +31,7 @@ def lesson_page(number: int):
                         date = lesson.get('generated_at', '')[:10]
                         label = ', '.join(part for part in ('Example output from Gemini', model, date) if part)
                         with ui.card().classes('panel').style(
-                                'max-height: 320px; overflow-y: auto; padding: 20px 24px'):
+                                'max-height: 20rem; overflow-y: auto; padding: 1.25rem 1.5rem'):
                             ui.label(label).classes('subtitle')
                             ui.markdown(output)
                             ui.label('Answers vary every time you ask.').classes('subtitle')
