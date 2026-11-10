@@ -19,13 +19,22 @@ def lesson_page(number: int):
         ui.label(lesson['title']).classes('title fade-in')
         ui.label(lesson['summary']).classes('subtitle fade-in-2')
 
-        with ui.row().classes('w-full justify-center q-mt-lg fade-in-2'):
-            with ui.card().classes('panel').style('max-width: 420px'):
-                ui.label('Weak prompt').classes('subtitle')
-                ui.label(lesson['bad_prompt'])
-            with ui.card().classes('panel').style('max-width: 420px'):
-                ui.label('Strong prompt').classes('subtitle')
-                ui.label(lesson['good_prompt'])
+        with ui.row().classes('w-full justify-center items-start q-mt-lg fade-in-2'):
+            for key, heading in (('bad', 'Weak prompt'), ('good', 'Strong prompt')):
+                with ui.column().classes('items-stretch').style('max-width: 420px'):
+                    with ui.card().classes('panel'):
+                        ui.label(heading).classes('subtitle')
+                        ui.label(lesson[f'{key}_prompt'])
+                    output = lesson.get(f'{key}_output')
+                    if output:
+                        model = lesson.get('model', 'Gemini')
+                        date = lesson.get('generated_at', '')[:10]
+                        label = ', '.join(part for part in ('Example output from Gemini', model, date) if part)
+                        with ui.card().classes('panel').style(
+                                'max-height: 320px; overflow-y: auto; padding: 20px 24px'):
+                            ui.label(label).classes('subtitle')
+                            ui.markdown(output)
+                            ui.label('Answers vary every time you ask.').classes('subtitle')
 
         ui.label(lesson['takeaway']).classes('subtitle q-mt-md')
 
